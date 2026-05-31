@@ -5,7 +5,6 @@ import (
     "fmt"
     "os"
     "strconv"
-    "slices"
 )
 
 type Meta struct {
@@ -22,7 +21,7 @@ type Pack struct {
 
 func main() {
     if len(os.Args) < 3 {
-        fmt.Println("Missing arguments! Usage: <.mcmeta input> <main format> [compatible formats]")
+        fmt.Println("Missing arguments! Usage: <.mcmeta input> <main format> [secondary format]")
         return
     }
 
@@ -54,27 +53,29 @@ func main() {
         return
     }
 
-    allFormats := []int{mainFormat}
+    otherFormat := mainFormat
 
-    for _, arg := range os.Args[3:] {
-        val, err := strconv.Atoi(arg)
+    if len(os.Args) >= 4 {
+        otherFormat, err = strconv.Atoi(os.Args[3])
         if err != nil {
-            fmt.Println("Compatible formats must be all integers")
+            fmt.Println("Second format must be an integer")
             return
         }
-
-        allFormats = append(allFormats, val)
     }
 
-    mode := detect(meta)
+    min := mainFormat
+    max := otherFormat
+
+    if min > max {
+        min, max = max, min
+    }
+
+    mode := detect(min)
 
     meta.Pack.PackFormat = &mainFormat
     meta.Pack.SupportedFormats = nil
     meta.Pack.MinFormat = nil
     meta.Pack.MaxFormat = nil
-
-    min := slices.Min(allFormats)
-    max := slices.Max(allFormats)
 
     switch mode {
         case "modern":
@@ -97,12 +98,12 @@ func main() {
     fmt.Println("Updated! Mode:", mode)
 }
 
-func detect(meta Meta) string {
-    if meta.Pack.MinFormat != nil || meta.Pack.MaxFormat != nil {
+func detect(format int) string {
+    if format > 64 { // 65 = 25w31a
         return "modern"
     }
 
-    if meta.Pack.SupportedFormats != nil {
+    if format > 15 { // 16 = 23w31a
         return "transitional"
     }
 
