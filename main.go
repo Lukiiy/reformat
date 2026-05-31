@@ -29,10 +29,10 @@ func main() {
     file := os.Args[1]
 
     fileInfo, err := os.Stat(file)
-	if err != nil {
-		panic(err)
-	}
-	fileMode := fileInfo.Mode()
+    if err != nil {
+        panic(err)
+    }
+    fileMode := fileInfo.Mode()
 
     stuff, err := os.ReadFile(file)
     if err != nil {
@@ -50,8 +50,8 @@ func main() {
 
     mainFormat, err := strconv.Atoi(os.Args[2])
     if err != nil {
-	    fmt.Println("Main format must be an integer")
-	    return
+        fmt.Println("Main format must be an integer")
+        return
     }
 
     allFormats := []int{mainFormat}
@@ -77,24 +77,24 @@ func main() {
     max := slices.Max(allFormats)
 
     switch mode {
-	    case "modern":
-	        meta.Pack.MinFormat = &min
-	        meta.Pack.MaxFormat = &max
-	    case "transitional":
-     		meta.Pack.SupportedFormats = &[]int{min, max}
+        case "modern":
+            meta.Pack.MinFormat = &min
+            meta.Pack.MaxFormat = &max
+        case "transitional":
+            meta.Pack.SupportedFormats = &[]int{min, max}
     }
 
     out, err := json.MarshalIndent(meta, "", "    ")
-	if err != nil {
-		panic(err)
-	}
+    if err != nil {
+        panic(err)
+    }
 
-	err = os.WriteFile(file, out, fileMode)
-	if err != nil {
-		panic(err)
-	}
+    err = os.WriteFile(file, out, fileMode)
+    if err != nil {
+        panic(err)
+    }
 
-	fmt.Println("Updated! Mode:", mode)
+    fmt.Println("Updated! Mode:", mode)
 }
 
 func detect(meta Meta) string {
