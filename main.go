@@ -90,6 +90,7 @@ func main() {
 
             meta.Pack.MinFormat = &minVal
             meta.Pack.MaxFormat = &maxVal
+            meta.Pack.PackFormat = nil
         case "transitional":
             meta.Pack.SupportedFormats = &[]int{min.Major, max.Major}
     }
