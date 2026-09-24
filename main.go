@@ -145,17 +145,17 @@ func compare(first Version, second Version) int {
     }
 
     firstMin := 0
-    seconodMin := 0
+    secondMin := 0
 
     if first.Minor != nil {
         firstMin = *first.Minor
     }
 
     if second.Minor != nil {
-        seconodMin = *second.Minor
+        secondMin = *second.Minor
     }
 
-    return firstMin - seconodMin
+    return firstMin - secondMin
 }
 
 func encode(version Version) any {
